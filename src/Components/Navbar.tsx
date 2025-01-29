@@ -11,7 +11,7 @@ function Navbar() {
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
 
-  const {isLoaded, isSignedIn, user} =useUser()
+  const { user } = useUser(); // Removed isLoaded and isSignedIn since they are unused
 
   return (
     <nav className="bg-black text-white">
@@ -54,7 +54,7 @@ function Navbar() {
           <SignedIn>
             <UserButton />
           </SignedIn>
-          <h1>{user?.fullName}</h1>
+          {user && <h1>{user.fullName}</h1>}
 
           {/* My Cart */}
           <div className="flex flex-col items-center relative">
