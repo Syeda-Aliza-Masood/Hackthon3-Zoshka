@@ -91,7 +91,7 @@ export default function Products() {
         {data.slice(0, visibleCount).map((card, index) => (
           <div
             key={index}
-            className="bg-white shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105"
+            className="bg-gray-200 shadow-md rounded-lg overflow-hidden transition-transform hover:scale-105"
           >
             <div className="relative w-full h-56 sm:h-64 md:h-72 lg:h-80">
               

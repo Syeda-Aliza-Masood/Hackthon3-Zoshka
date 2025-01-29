@@ -4,11 +4,14 @@ import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { FaShoppingCart, FaUser } from "react-icons/fa";
+import { SignedIn, SignedOut, SignInButton, UserButton, useUser } from "@clerk/nextjs";
 
 function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const {isLoaded, isSignedIn, user} =useUser()
 
   return (
     <nav className="bg-black text-white">
@@ -16,10 +19,10 @@ function Navbar() {
         {/* Logo with Image */}
         <div className="flex items-center text-2xl font-bold">
           <Image
-            src="/logo.jpeg" // Replace with the actual path to your logo image
+            src="/logo.jpeg"
             alt="Logo"
-            width={35} // Set the width of the logo
-            height={35} // Set the height of the logo
+            width={35}
+            height={35}
             className="mr-2"
           />
           <Link href="/" className="hover:text-gray-300">
@@ -37,18 +40,25 @@ function Navbar() {
           <li><Link href="/contact" className="hover:text-gray-300">Contact</Link></li>
         </ul>
 
-         {/* Right: User and Cart Sections */}
-         <div className="flex items-center space-x-6">
-          {/* User*/}
-          <div className="flex flex-col items-center">
-            <FaUser className="w-6 h-5 mb-1" />
-            <Link href="/login">User</Link>
-          </div>
+        {/* Right: User and Cart Sections */}
+        <div className="flex items-center space-x-6">
+          {/* User Authentication */}
+          <SignedOut>
+            <SignInButton>
+              <div className="flex flex-col items-center cursor-pointer">
+                <FaUser className="w-6 h-5 mb-1" />
+                <span>Login</span>
+              </div>
+            </SignInButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          <h1>{user?.fullName}</h1>
 
           {/* My Cart */}
           <div className="flex flex-col items-center relative">
             <FaShoppingCart className="w-6 h-5 mb-1" />
-            {/* Cart Item Count Badge */}
             <Link href="/cart">My Cart</Link>
           </div>
         </div>
@@ -75,7 +85,7 @@ function Navbar() {
             <li><Link href="/about" className="hover:text-[#B88E2F]" onClick={toggleMenu}>About</Link></li> 
             <li><Link href="/shop" className="hover:text-[#B88E2F]" onClick={toggleMenu}>Shop</Link></li>
             <li><Link href="/cart" className="hover:text-[#B88E2F]" onClick={toggleMenu}>Cart</Link></li>
-            <li><Link href="/review" className="hover:text-gray-300">Review</Link></li>
+            <li><Link href="/review" className="hover:text-gray-300" onClick={toggleMenu}>Review</Link></li>
             <li><Link href="/contact" className="hover:text-[#B88E2F]" onClick={toggleMenu}>Contact</Link></li>
           </ul>
         </div>
