@@ -1,5 +1,4 @@
-"use client";
-
+"use client"
 import { useEffect, useState, useRef } from "react";
 import { Eye, ShoppingCart, Store, Clock } from "lucide-react";
 
@@ -11,7 +10,7 @@ interface StatProps {
 
 function AnimatedStat({ endValue, label, icon }: StatProps) {
   const [count, setCount] = useState(0);
-  const [isVisible, setIsVisible] = useState(false); // State to track visibility
+  const [isVisible, setIsVisible] = useState(false);
   const statRef = useRef(null);
 
   useEffect(() => {
@@ -21,24 +20,26 @@ function AnimatedStat({ endValue, label, icon }: StatProps) {
           setIsVisible(true);
         }
       },
-      { threshold: 0.5 } // Trigger animation when 50% of the component is visible
+      { threshold: 0.5 }
     );
 
-    if (statRef.current) {
-      observer.observe(statRef.current);
+    const currentStatRef = statRef.current; // Copy the ref value to a local variable
+
+    if (currentStatRef) {
+      observer.observe(currentStatRef);
     }
 
     return () => {
-      if (statRef.current) {
-        observer.unobserve(statRef.current);
+      if (currentStatRef) {
+        observer.unobserve(currentStatRef); // Use the local variable here
       }
     };
   }, []);
 
   useEffect(() => {
     if (isVisible) {
-      const duration = 2000; // Animation duration in milliseconds
-      const steps = 60; // Number of steps in the animation
+      const duration = 2000;
+      const steps = 60;
       const stepValue = endValue / steps;
       let current = 0;
 
@@ -77,10 +78,10 @@ export default function StatsSection() {
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
       style={{
-        backgroundImage: `url('/counter.jpg')`, // Ensure the image is placed in the public directory
-        backgroundSize: "cover", // Ensure the background covers the entire area
-        backgroundPosition: "center center", // Position the image at the center
-        backgroundRepeat: "no-repeat", // Prevent repetition of the background image
+        backgroundImage: `url('/counter.jpg')`,
+        backgroundSize: "cover",
+        backgroundPosition: "center center",
+        backgroundRepeat: "no-repeat",
       }}
     >
       <div className="w-full max-w-7xl">

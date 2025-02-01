@@ -31,12 +31,6 @@ export default function ReviewSection() {
     }
   };
 
-  // Function to clear reviews
-  const clearReviews = () => {
-    setReviews([]);
-    localStorage.removeItem("reviews"); // Remove reviews from local storage
-  };
-
   return (
     <>
       <Navbar /> {/* Add Navbar here */}
