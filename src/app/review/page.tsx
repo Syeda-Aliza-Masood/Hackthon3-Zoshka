@@ -5,9 +5,10 @@ import Footer from "@/Components/Footer";
 import Subfooter from "@/Components/Subfooter";
 
 export default function ReviewSection() {
-  const [reviews, setReviews] = useState<{ name: string; review: string }[]>([]);
+  const [reviews, setReviews] = useState<{ name: string; review: string; rating: number }[]>([]);
   const [newName, setNewName] = useState("");
   const [newReview, setNewReview] = useState("");
+  const [newRating, setNewRating] = useState(0); // Track the selected rating
 
   // Load reviews from local storage when the component mounts
   useEffect(() => {
@@ -20,13 +21,20 @@ export default function ReviewSection() {
   // Handle the review submission
   const handleReviewSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (newName.trim() && newReview.trim()) {
-      const updatedReviews = [...reviews, { name: newName, review: newReview }];
+    if (newName.trim() && newReview.trim() && newRating > 0) {
+      const updatedReviews = [...reviews, { name: newName, review: newReview, rating: newRating }];
       setReviews(updatedReviews);
       localStorage.setItem("reviews", JSON.stringify(updatedReviews)); // Save reviews to local storage
       setNewName(""); // Clear the name input
       setNewReview(""); // Clear the review input
+      setNewRating(0); // Clear the rating input
     }
+  };
+
+  // Function to clear reviews
+  const clearReviews = () => {
+    setReviews([]);
+    localStorage.removeItem("reviews"); // Remove reviews from local storage
   };
 
   return (
@@ -55,6 +63,22 @@ export default function ReviewSection() {
                 placeholder="Share your review..."
                 required
               />
+              {/* Rating Heading and Star Rating Input */}
+              <div className="flex justify-between items-center mb-4">
+                <span className="text-lg font-semibold text-black">Rating</span>
+                <div className="flex items-center">
+                  {[1, 2, 3, 4, 5].map((star) => (
+                    <button
+                      key={star}
+                      type="button"
+                      onClick={() => setNewRating(star)}
+                      className={`text-2xl ${star <= newRating ? "text-yellow-500" : "text-gray-400"}`}
+                    >
+                      ★
+                    </button>
+                  ))}
+                </div>
+              </div>
               <button
                 type="submit"
                 className="w-full bg-[#B88E2F] text-white py-2 rounded-md hover:bg-gray-800 transition duration-300"
@@ -70,9 +94,29 @@ export default function ReviewSection() {
               <p className="text-center text-gray-600">No reviews yet. Be the first to review!</p>
             ) : (
               reviews.map((review, index) => (
-                <div key={index} className="bg-gray-200 p-6 rounded-lg shadow-lg">
-                  <p className="text-lg font-semibold text-black">{review.name}</p>
-                  <p className="text-gray-600">{review.review}</p>
+                <div key={index} className="bg-gray-200 p-6 rounded-lg shadow-lg flex">
+                  {/* Left Section (Headings) */}
+                  <div className="w-1/3 pr-4">
+                    <p className="text-lg font-semibold text-black">Name</p>
+                    <p className="text-lg font-semibold text-black mt-4">Review</p>
+                    <p className="text-lg font-semibold text-black mt-4">Rating</p>
+                  </div>
+
+                  {/* Right Section (Content) */}
+                  <div className="w-2/3 pl-4">
+                    <p className="text-gray-600">{review.name}</p>
+                    <p className="text-gray-600 mt-4">{review.review}</p>
+                    <div className="flex items-center text-yellow-500 mt-4">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={`text-2xl ${star <= review.rating ? "text-yellow-500" : "text-gray-400"}`}
+                        >
+                          ★
+                        </span>
+                      ))}
+                    </div>
+                  </div>
                 </div>
               ))
             )}

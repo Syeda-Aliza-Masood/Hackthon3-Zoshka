@@ -1,8 +1,26 @@
+'use client';  // Add this line at the top of the file
+
 import Navbar from "@/Components/Navbar";
 import Subfooter from "@/Components/Subfooter";
 import Footer from "@/Components/Footer";
 
 export default function Contact() {
+  // Function to handle form submission and send the message via email
+  const handleSubmit = (event: React.FormEvent) => {
+    event.preventDefault();
+
+    const name = (document.getElementById("name") as HTMLInputElement).value;
+    const email = (document.getElementById("email") as HTMLInputElement).value;
+    const message = (document.getElementById("message") as HTMLTextAreaElement).value;
+
+    const recipientEmail = "salizamasood@gmail.com"; // Email to send the message to
+    const subject = encodeURIComponent(`Message from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\nMessage: ${message}`);
+
+    const mailtoLink = `mailto:${recipientEmail}?subject=${subject}&body=${body}`;
+    window.location.href = mailtoLink; // Opens the default email client with pre-filled information
+  };
+
   return (
     <div>
       <Navbar />
@@ -24,7 +42,7 @@ export default function Contact() {
               </p>
               <ul className="text-lg text-gray-700 space-y-4">
                 <li>
-                  <span className="font-semibold">Email:</span> zoshka@gmail.com
+                  <span className="font-semibold">Email:</span> salizamasood@gmail.com
                 </li>
                 <li>
                   <span className="font-semibold">Phone:</span> +1 123 456 7890
@@ -34,13 +52,13 @@ export default function Contact() {
                 </li>
               </ul>
             </div>
-            
+
             {/* Contact Form */}
             <div className="bg-gray-100 p-6 rounded-lg shadow-lg">
               <h3 className="text-2xl font-semibold text-[#B88E2F] mb-4">
                 Send Us a Message
               </h3>
-              <form>
+              <form onSubmit={handleSubmit}>
                 <div className="mb-4">
                   <label
                     htmlFor="name"
@@ -53,6 +71,8 @@ export default function Contact() {
                     id="name"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-[#B88E2F] focus:border-[#B88E2F]"
                     placeholder="Your Name"
+                    name="name"
+                    required
                   />
                 </div>
 
@@ -68,6 +88,8 @@ export default function Contact() {
                     id="email"
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-[#B88E2F] focus:border-[#B88E2F]"
                     placeholder="Your Email"
+                    name="email"
+                    required
                   />
                 </div>
 
@@ -83,6 +105,8 @@ export default function Contact() {
                     className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:ring-[#B88E2F] focus:border-[#B88E2F]"
                     rows={4}
                     placeholder="Your Message"
+                    name="message"
+                    required
                   ></textarea>
                 </div>
 

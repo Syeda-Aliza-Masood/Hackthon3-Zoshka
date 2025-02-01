@@ -1,60 +1,86 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Eye, ShoppingCart, Store, Clock } from "lucide-react"
+import { useEffect, useState, useRef } from "react";
+import { Eye, ShoppingCart, Store, Clock } from "lucide-react";
 
 interface StatProps {
-  endValue: number
-  label: string
-  icon: React.ReactNode
+  endValue: number;
+  label: string;
+  icon: React.ReactNode;
 }
 
 function AnimatedStat({ endValue, label, icon }: StatProps) {
-  const [count, setCount] = useState(0)
+  const [count, setCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false); // State to track visibility
+  const statRef = useRef(null);
 
   useEffect(() => {
-    const duration = 2000 // Animation duration in milliseconds
-    const steps = 60 // Number of steps in the animation
-    const stepValue = endValue / steps
-    let current = 0
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setIsVisible(true);
+        }
+      },
+      { threshold: 0.5 } // Trigger animation when 50% of the component is visible
+    );
 
-    const timer = setInterval(() => {
-      current += 1
-      setCount(Math.min(Math.floor(stepValue * current), endValue))
+    if (statRef.current) {
+      observer.observe(statRef.current);
+    }
 
-      if (current >= steps) {
-        clearInterval(timer)
+    return () => {
+      if (statRef.current) {
+        observer.unobserve(statRef.current);
       }
-    }, duration / steps)
+    };
+  }, []);
 
-    return () => clearInterval(timer)
-  }, [endValue])
+  useEffect(() => {
+    if (isVisible) {
+      const duration = 2000; // Animation duration in milliseconds
+      const steps = 60; // Number of steps in the animation
+      const stepValue = endValue / steps;
+      let current = 0;
+
+      const timer = setInterval(() => {
+        current += 1;
+        setCount(Math.min(Math.floor(stepValue * current), endValue));
+
+        if (current >= steps) {
+          clearInterval(timer);
+        }
+      }, duration / steps);
+    }
+  }, [isVisible, endValue]);
 
   return (
-    <div className="flex flex-col items-center p-6 bg-white bg-opacity-90 rounded-lg shadow-lg">
+    <div
+      ref={statRef}
+      className="flex flex-col items-center p-6 bg-white bg-opacity-90 rounded-lg shadow-lg"
+    >
       <div className="p-3 rounded-full bg-[#D4C485] text-white mb-4">{icon}</div>
       <h2 className="text-4xl font-bold mb-2 tabular-nums">{count}</h2>
       <p className="text-gray-600 uppercase tracking-wider text-sm">{label}</p>
     </div>
-  )
+  );
 }
 
 export default function StatsSection() {
   const stats = [
-    { value: 22070, label: "Creativity Fuel", icon: <Eye className="w-6 h-6" /> },
+    { value: 2070, label: "Creativity Fuel", icon: <Eye className="w-6 h-6" /> },
     { value: 450, label: "Happy Clients", icon: <ShoppingCart className="w-6 h-6" /> },
-    { value: 700, label: "All Products", icon: <Store className="w-6 h-6" /> },
-    { value: 5605, label: "Hours Spent", icon: <Clock className="w-6 h-6" /> },
-  ]
+    { value: 100, label: "All Products", icon: <Store className="w-6 h-6" /> },
+    { value: 50, label: "Hours Spent", icon: <Clock className="w-6 h-6" /> },
+  ];
 
   return (
     <div
       className="min-h-screen flex items-center justify-center bg-cover bg-center p-4"
       style={{
         backgroundImage: `url('/counter.jpg')`, // Ensure the image is placed in the public directory
-        backgroundSize: 'cover', // Ensure the background covers the entire area
-        backgroundPosition: 'center center', // Position the image at the center
-        backgroundRepeat: 'no-repeat', // Prevent repetition of the background image
+        backgroundSize: "cover", // Ensure the background covers the entire area
+        backgroundPosition: "center center", // Position the image at the center
+        backgroundRepeat: "no-repeat", // Prevent repetition of the background image
       }}
     >
       <div className="w-full max-w-7xl">
@@ -65,5 +91,5 @@ export default function StatsSection() {
         </div>
       </div>
     </div>
-  )
+  );
 }
